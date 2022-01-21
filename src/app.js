@@ -9,13 +9,21 @@ let user = { username: "", avatar: "" };
 const tweets = [];
 
 app.post('/sign-up', (req, res) => {
-    user = req.body;
-    res.send('OK');
+    if (req.body.username === '' || req.body.avatar === '' || typeof(req.body.username) === 'undefined' || typeof(req.body.avatar) === 'undefined') {
+        res.status(400).send('Todos os campos são obrigatórios!');
+    } else {
+        user = req.body;
+        res.status(201).send('OK');
+    }
 });
 
 app.post('/tweets', (req, res) => {
-    tweets.unshift({ ...req.body, avatar: user.avatar });
-    res.send('OK');
+    if (req.body.username === '' || req.body.tweet === '' || typeof(req.body.username) === 'undefined' || typeof(req.body.tweet) === 'undefined') {
+        res.status(400).send('Todos os campos são obrigatórios!');
+    } else {
+        tweets.unshift({ ...req.body, avatar: user.avatar });
+        res.status(201).send('OK');
+    }
 });
 
 app.get('/tweets', (req, res) => {
