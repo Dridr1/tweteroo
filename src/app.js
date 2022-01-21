@@ -1,11 +1,17 @@
 import express from "express";
+import cors from 'cors';
 
-let user;
+let user = {
+    username: "",
+    avatar: ""
+};
+
 const tweets = [];
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.post('/sign-up', (req, res) => {
     user = req.body;
@@ -13,9 +19,18 @@ app.post('/sign-up', (req, res) => {
 });
 
 app.post('/tweets', (req, res) => {
-    tweets.push(req.body);
+    const tweet = {...req.body, avatar: user.avatar}
+    tweets.push(tweet);
     res.send('OK');
-    console.log(tweets);
+});
+
+app.get('/tweets', (req, res) => {
+    if(tweets.length > 10) res.send(tweets);
+    else{
+        const tweetsTemp = [...tweets];
+        const lastTweets = tweetsTemp.splice(tweets.length - 10);
+        res.send(lastTweets);
+    }
 })
 
 app.listen(5000, () => {
