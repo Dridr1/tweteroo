@@ -19,19 +19,18 @@ app.post('/sign-up', (req, res) => {
 });
 
 app.post('/tweets', (req, res) => {
-    const tweet = {...req.body, avatar: user.avatar}
-    tweets.push(tweet);
+    tweets.unshift({...req.body, avatar: user.avatar});
     res.send('OK');
 });
 
 app.get('/tweets', (req, res) => {
-    if(tweets.length > 10) res.send(tweets);
+    if(tweets.length < 10) res.send(tweets);
     else{
         const tweetsTemp = [...tweets];
-        const lastTweets = tweetsTemp.splice(tweets.length - 10);
+        const lastTweets = tweetsTemp.slice(0, 10);
         res.send(lastTweets);
     }
-})
+});
 
 app.listen(5000, () => {
     console.log('-------------------------------------');
