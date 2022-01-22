@@ -9,7 +9,7 @@ let user = { username: "", avatar: "" };
 const tweets = [];
 
 app.post('/sign-up', (req, res) => {
-    if (req.body.username === '' || req.body.avatar === '' || typeof(req.body.username) === 'undefined' || typeof(req.body.avatar) === 'undefined') {
+    if (req.body.username === '' || req.body.avatar === '' || typeof (req.body.username) === 'undefined' || typeof (req.body.avatar) === 'undefined') {
         res.status(400).send('Todos os campos são obrigatórios!');
     } else {
         user = req.body;
@@ -18,7 +18,7 @@ app.post('/sign-up', (req, res) => {
 });
 
 app.post('/tweets', (req, res) => {
-    if (req.header('User') === '' || req.body.tweet === '' || typeof(req.header('User')) === 'undefined' || typeof(req.body.tweet) === 'undefined') {
+    if (req.header('User') === '' || req.body.tweet === '' || typeof (req.header('User')) === 'undefined' || typeof (req.body.tweet) === 'undefined') {
         res.status(400).send('Todos os campos são obrigatórios!');
     } else {
         tweets.unshift({ ...req.body, username: req.header('User'), avatar: user.avatar });
@@ -28,7 +28,18 @@ app.post('/tweets', (req, res) => {
 
 app.get('/tweets', (req, res) => {
     if (tweets.length < 10) res.send(tweets);
-    else res.send(tweets.slice(0, 10));
+    else {
+        let startItem;
+
+        if (req.query.page < 0) res.status(400).send('Informe uma página válida!');
+
+        else if (req.query.page === 1) res.send(tweets.slice(0, 10));
+
+        else {
+            startItem = (req.query.page - 1) * 10;
+            res.send(tweets.slice(startItem, startItem + 10));
+        }
+    }
 });
 
 app.get('/tweets/:userName', (req, res) => {
